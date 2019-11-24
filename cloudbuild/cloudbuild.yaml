@@ -1,0 +1,56 @@
+# Decrypt the file containing the key
+steps:
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=cloudbuild/gcp_id_rsa.enc
+  - --plaintext-file=/root/.ssh/gcp_id_rsa
+  - --location=global
+  - --keyring=gcp_github
+  - --key=github-key
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+# Set up git with key and domain
+- name: 'gcr.io/cloud-builders/git'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    chmod 600 /root/.ssh/gcp_id_rsa
+    cat <<EOF >/root/.ssh/config
+    Hostname github.com
+    IdentityFile /root/.ssh/gcp_id_rsa
+    EOF
+    mv cloudbuild/known_hosts /root/.ssh/known_hosts
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+# Connect to the repository
+- name: 'gcr.io/cloud-builders/git'
+  args:
+  - clone
+  - git@github.com:slowmosteve/tf-ref-project.git
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+# Perform terraform init
+- name: hashicorp/terraform
+  id: terraform-init
+  args: ['init']
+
+# Terraform plan
+- name: hashicorp/terraform
+  id: terraform-plan
+  args: ['plan']
+
+# Terraform apply
+- name: hashicorp/terraform
+  id: terraform-apply
+  args:
+    - 'apply'
+    - '-auto-approve'

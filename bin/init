@@ -1,0 +1,27 @@
+echo 'Setting up GitHub Deploy Keys for Cloud Build'
+read -p 'Service account: ' service_acct
+mkdir .ssh;
+ssh-keygen \
+  -t rsa \
+  -b 4096 \
+  -f .ssh/gcp_id_rsa \
+  -q \
+  -N "";
+gcloud kms keyrings create gcp_github \
+  --location=global;
+gcloud kms keys create github-key \
+  --location=global \
+  --keyring=gcp_github \
+  --purpose=encryption;
+gcloud kms encrypt \
+  --plaintext-file=.ssh/gcp_id_rsa \
+  --ciphertext-file=cloudbuild/gcp_id_rsa.enc \
+  --location=global \
+  --keyring=gcp_github \
+  --key=github-key;
+gcloud kms keys add-iam-policy-binding github-key \
+  --location=global \
+  --keyring=gcp_github \
+  --member=serviceAccount:$service_acct \
+  --role=roles/cloudkms.cryptoKeyDecrypter;
+ssh-keyscan -t rsa github.com > cloudbuild/known_hosts;
