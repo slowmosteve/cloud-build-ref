@@ -1,5 +1,5 @@
-echo 'Setting up Terraform state bucket'
-read -p 'Service account: ' service_acct
-read -p 'Bucket name: ' bucket
+echo "Setting up Terraform state bucket"
+read -p "Cloud Build service account: " service_acct
+read -p "Remote Terraform state bucket name: " bucket
 gsutil defacl ch \
   -u $service_acct:OWNER gs://$bucket

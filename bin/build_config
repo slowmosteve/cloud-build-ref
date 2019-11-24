@@ -1,0 +1,9 @@
+# github integration isn't working yet
+echo "Setting up Cloud Build Trigger"
+read -p "GitHub Account: " repo_owner
+read -p "Repository: " repo_name
+gcloud beta builds triggers create github \
+  --repo-owner=$repo_owner \
+  --repo-name=$repo_name \
+  --branch-pattern="master" \
+  --build-config=./cloudbuild/cloudbuild.yaml

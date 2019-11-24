@@ -33,7 +33,7 @@ steps:
 - name: 'gcr.io/cloud-builders/git'
   args:
   - clone
-  - git@github.com:slowmosteve/tf-ref-project.git
+  - git@github.com:slowmosteve/cloud-build-ref.git
   volumes:
   - name: 'ssh'
     path: /root/.ssh

@@ -1,0 +1,6 @@
+# shell script to grant Cloud Build service account the project editor role
+echo "Setting up Cloud Build service account IAM role"
+read -p "Cloud Build service account: " service_acct
+gcloud iam service-accounts add-iam-policy-binding $service_acct \
+  --member="serviceAccount:${service_acct}" \
+  --role='roles/editor'

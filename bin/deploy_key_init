@@ -1,27 +1,34 @@
-echo 'Setting up GitHub Deploy Keys for Cloud Build'
-read -p 'Service account: ' service_acct
+echo "Setting up GitHub Deploy Keys for Cloud Build";
+read -p "Service account: " service_acct;
+# create directory for RSA encryption keys
 mkdir .ssh;
+# create new private and public key called "gcp_id_rsa" to be used as GitHub deploy key
 ssh-keygen \
   -t rsa \
   -b 4096 \
   -f .ssh/gcp_id_rsa \
   -q \
   -N "";
+# create GCP KMS keyring
 gcloud kms keyrings create gcp_github \
   --location=global;
+# create KMS key
 gcloud kms keys create github-key \
   --location=global \
   --keyring=gcp_github \
   --purpose=encryption;
+# encrypt private deploy key and output to "cloudbuild/gcp_id_rsa.enc"
 gcloud kms encrypt \
   --plaintext-file=.ssh/gcp_id_rsa \
   --ciphertext-file=cloudbuild/gcp_id_rsa.enc \
   --location=global \
   --keyring=gcp_github \
   --key=github-key;
+# add decrypter IAM role to cloudbuild service account 
 gcloud kms keys add-iam-policy-binding github-key \
   --location=global \
   --keyring=gcp_github \
   --member=serviceAccount:$service_acct \
   --role=roles/cloudkms.cryptoKeyDecrypter;
+# add key to known hosts file
 ssh-keyscan -t rsa github.com > cloudbuild/known_hosts;
