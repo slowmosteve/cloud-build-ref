@@ -2,7 +2,5 @@
 *.tfstate.backup
 gcp_id_rsa
 gcp_id_rsa.pub
-
-
 /.ssh
 /.terraform

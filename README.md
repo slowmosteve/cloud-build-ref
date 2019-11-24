@@ -1,6 +1,6 @@
-# Project Factory
+# Cloud Build Reference Project
 
-this project is used to create new projects in Google Cloud Platform with remote Terraform state management and builds automated through Google Cloud Build.
+This repo demostrates how to create projects in Google Cloud Platform with remote Terraform state management and builds automated through Google Cloud Build.
 
 ## Create Project
 - create new project using `gcloud projects create [project id]`
