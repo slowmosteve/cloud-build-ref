@@ -22,6 +22,9 @@ This repo demostrates how to create projects in Google Cloud Platform with remot
 - Shell script `deploy_key_init` for creating deploy keys and encrypting with KMS
 - In GitHub repo, add public key `gcp_id_rsa.pub` to the deploy keys with read only access
 
+## Grant Project Editor Access to Cloud Build Service Account
+- Shell script `iam_config` for adding `
+
 ## Update Cloud Build YAML
 - Update `cloudbuild.yaml` with GitHub repo
 - Test the build pipeline using `gcloud builds submit --config=cloudbuild/cloudbuild.yaml .`
