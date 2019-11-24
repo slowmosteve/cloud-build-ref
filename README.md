@@ -16,14 +16,14 @@ This repo demostrates how to create projects in Google Cloud Platform with remot
 - Go to https://console.cloud.google.com/cloud-build/settings and copy the service account for Cloud Build
 - This service account needs read and write access to the bucket with Terraform backend state (separate project)
 - Shell script `tfstate_config` for granting access using `gsutil`
-  - Prompts for Cloud Build service account and remote Terraform state bucket
+  - Prompts for Cloud Build service account and remote Terraform state bucket (this doesn't seem to be working, need to investigate)
 
 ## Setup Github Deploy Keys
 - Shell script `deploy_key_init` for creating deploy keys and encrypting with KMS
 - In GitHub repo, add public key `gcp_id_rsa.pub` to the deploy keys with read only access
 
 ## Grant Project Editor Access to Cloud Build Service Account
-- Shell script `iam_config` for adding `
+- Shell script `iam_config` for adding project editor role to Cloud Build service account (this doesn't seem to be working, need to investigate)
 
 ## Update Cloud Build YAML
 - Update `cloudbuild.yaml` with GitHub repo
